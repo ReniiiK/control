@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Control Panel</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+            background-color: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .status { margin-bottom: 20px; font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    <div class="status">🖥 Управление ПК</div>
+    
+    <button onclick="sendCmd('screenshot')">📸 Сделать скриншот</button>
+    <button onclick="sendCmd('run_zapad')">🚀 Запустить Zapad.bat</button>
+    <button onclick="sendCmd('off')">🛑 Выключить ПК</button>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Развернуть на весь экран
+
+        function sendCmd(action) {
+            // Отправляем данные боту
+            tg.sendData(action);
+        }
+    </script>
+</body>
+</html>
