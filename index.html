@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PC Control Panel</title>
+    <title>PC Control Ultimate</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --bg: #0a0a0a; --card: #1a1a1a; --accent: #0088cc; --text: #efefef; }
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 15px; margin: 0; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; background: var(--card); color: #777; }
-        .tab-btn.active { background: var(--accent); color: #fff; }
+        :root { --bg: #0f0f0f; --card: #1e1e1e; --accent: #00a2ff; --text: #e0e0e0; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; }
+        .tabs { display: flex; gap: 5px; background: var(--card); padding: 5px; border-radius: 12px; margin-bottom: 10px; }
+        .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; background: transparent; color: #888; cursor: pointer; }
+        .tab-btn.active { background: var(--bg); color: var(--accent); }
         .content { display: none; }
         .content.active { display: block; }
-        .btn { width: 100%; padding: 16px; margin: 6px 0; border: none; border-radius: 12px; background: var(--card); color: #fff; border-left: 5px solid var(--accent); text-align: left; }
-        input { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #333; background: #000; color: #fff; margin-bottom: 10px; box-sizing: border-box; }
-        .key-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .key { padding: 15px; background: #222; border-radius: 8px; text-align: center; border: 1px solid #333; cursor: pointer; }
-        .key:active { background: var(--accent); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .btn { padding: 15px; border: none; border-radius: 10px; background: var(--card); color: #fff; text-align: left; border-left: 4px solid var(--accent); }
+        input { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #333; background: #000; color: #fff; box-sizing: border-box; margin-bottom: 10px; }
+        .key-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+        .key { padding: 12px; background: #333; border-radius: 5px; text-align: center; font-size: 12px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -28,47 +28,47 @@
     </div>
 
     <div id="main" class="content active">
-        <button class="btn" onclick="send('run_zapad')">🚀 Запустить Rodina RP</button>
-        <button class="btn" onclick="send('stream_toggle')">🎥 Live-поток (Вкл/Выкл)</button>
+        <div class="grid">
+            <button class="btn" onclick="send('run_zapad')">🚀 Rodina RP</button>
+            <button class="btn" onclick="send('stream_toggle')">🎥 Live Стрим</button>
+            <button class="btn" onclick="send('write:/hmenu')">🏠 /hmenu</button>
+            <button class="btn" onclick="send('write:/stats')">📊 /stats</button>
+        </div>
     </div>
 
     <div id="keys" class="content">
-        <input type="text" id="txt" placeholder="Текст...">
-        <button class="btn" onclick="sendText()">⌨️ Напечатать</button>
+        <input type="text" id="textInput" placeholder="Текст...">
+        <button class="btn" style="width:100%; margin-bottom:10px;" onclick="sendText()">⌨️ Печатать</button>
         <div class="key-grid">
+            <div class="key" onclick="send('key:up')">UP ⬆️</div>
             <div class="key" onclick="send('key:enter')">ENTER</div>
             <div class="key" onclick="send('key:esc')">ESC</div>
+            <div class="key" onclick="send('key:left')">LEFT ⬅️</div>
+            <div class="key" onclick="send('key:down')">DOWN ⬇️</div>
+            <div class="key" onclick="send('key:right')">RIGHT ➡️</div>
             <div class="key" onclick="send('key:alt+tab')">ALT+TAB</div>
-            <div class="key" onclick="send('key:f6')">F6</div>
-            <div class="key" onclick="send('key:w')">W</div>
-            <div class="key" onclick="send('key:alt+f4')">ALT+F4</div>
+            <div class="key" onclick="send('key:f6')">F6 (Чат)</div>
+            <div class="key" onclick="send('key:w')">W (Газ)</div>
         </div>
     </div>
 
     <div id="sys" class="content">
-        <button class="btn" onclick="send('off')">🛑 Выключить ПК</button>
+        <button class="btn" style="width:100%; border-left-color: red;" onclick="send('off')">🛑 Выключить ПК</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-
         function openTab(name) {
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(name).classList.add('active');
             event.currentTarget.classList.add('active');
         }
-
-        // КРИТИЧЕСКОЕ ИЗМЕНЕНИЕ: используем CloudStorage или обычный запрос, 
-        // чтобы не закрывать окно через sendData.
-        function send(cmd) {
-            fetch(`https://api.telegram.org/bot8605766923:AAH5gWXQCJQ53s5bcLvTS9b5yLECnHfzyUA/sendMessage?chat_id=7113810331&text=${cmd}`);
-        }
-
+        function send(cmd) { tg.sendData(cmd); }
         function sendText() {
-            const input = document.getElementById('txt');
-            if(input.value) { send('write:' + input.value); input.value = ''; }
+            const val = document.getElementById('textInput').value;
+            if(val) { send('write:' + val); document.getElementById('textInput').value = ''; }
         }
     </script>
 </body>
