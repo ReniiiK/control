@@ -3,31 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rodina Control Ultimate</title>
+    <title>Rodina Control Panel</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --bg: #0d0d0d; --card: #1a1a1a; --accent: #0088cc; --text: #ffffff; --gray: #888; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; user-select: none; }
+        :root { --bg: #0d0d0d; --card: #1c1c1e; --accent: #0088cc; --text: #ffffff; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; overflow-x: hidden; }
         
-        .tabs { display: flex; gap: 5px; background: var(--card); padding: 5px; border-radius: 12px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; background: transparent; color: var(--gray); cursor: pointer; transition: 0.3s; font-weight: bold; }
-        .tab-btn.active { background: #252525; color: var(--accent); }
+        /* Вкладки */
+        .tabs { display: flex; gap: 8px; background: #252525; padding: 6px; border-radius: 14px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; background: transparent; color: #8e8e93; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .tab-btn.active { background: var(--accent); color: #fff; }
 
-        .content { display: none; animation: fadeIn 0.2s; }
+        .content { display: none; }
         .content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn { padding: 15px; border: none; border-radius: 12px; background: var(--card); color: #fff; font-size: 14px; text-align: left; cursor: pointer; border-left: 4px solid var(--accent); }
-        .btn:active { background: #222; transform: scale(0.98); }
+        /* Стили кнопок */
+        .btn { 
+            width: 100%; padding: 18px; margin: 8px 0; border: none; border-radius: 14px; 
+            background: var(--card); color: #fff; font-size: 15px; font-weight: 500;
+            text-align: left; cursor: pointer; border-left: 4px solid var(--accent);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: 0.1s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn:active { transform: scale(0.97); background: #2c2c2e; opacity: 0.8; }
 
-        input { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #333; background: #000; color: #fff; box-sizing: border-box; margin-bottom: 10px; outline: none; }
+        input { 
+            width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #333; 
+            background: #000; color: #fff; box-sizing: border-box; margin-bottom: 12px; font-size: 16px;
+        }
         
-        .key-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
-        .key { padding: 15px 5px; background: #222; border-radius: 8px; text-align: center; font-size: 12px; font-weight: bold; border: 1px solid #333; cursor: pointer; }
-        .key:active { background: var(--accent); color: white; }
-        
-        .special-key { background: #2d2d2d; color: var(--accent); }
+        /* Сетка клавиш */
+        .key-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .key { 
+            padding: 20px 5px; background: var(--card); border-radius: 12px; text-align: center; 
+            font-size: 13px; font-weight: bold; border: 1px solid #333; cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.1s;
+        }
+        .key:active { background: var(--accent); border-color: var(--accent); transform: translateY(2px); }
+        .key-blue { color: var(--accent); border-color: var(--accent); }
     </style>
 </head>
 <body>
@@ -39,47 +52,43 @@
     </div>
 
     <div id="main" class="content active">
-        <div class="grid">
-            <button class="btn" onclick="send('run_zapad')">🚀 Запустить Rodina</button>
-            <button class="btn" onclick="send('stream_toggle')">🎥 Live Стрим</button>
-            <button class="btn" onclick="send('write:/hmenu')">🏠 Дом (/hmenu)</button>
-            <button class="btn" onclick="send('write:/stats')">📊 Стата (/stats)</button>
-        </div>
+        <button class="btn" onclick="send('run_zapad')">🚀 Запустить Rodina RP</button>
+        <button class="btn" onclick="send('stream_toggle')">🎥 Live Стрим (Вкл/Выкл)</button>
     </div>
 
     <div id="keys" class="content">
-        <input type="text" id="textInput" placeholder="Введите текст для игры...">
-        <button class="btn" style="width:100%; text-align:center;" onclick="sendText()">⌨️ Напечатать в чат</button>
+        <input type="text" id="textInput" placeholder="Введите текст...">
+        <button class="btn" style="text-align:center; border-left:none; background: var(--accent);" onclick="sendText()">⌨️ Отправить в чат</button>
         
         <div class="key-grid">
+            <div class="key key-blue" onclick="send('write:/hmenu')">/HMENU</div>
+            <div class="key key-blue" onclick="send('write:/stats')">/STATS</div>
             <div class="key" onclick="send('key:esc')">ESC</div>
-            <div class="key special-key" onclick="send('key:up')">UP ⬆️</div>
-            <div class="key" onclick="send('key:f6')">F6 (Чат)</div>
             
-            <div class="key special-key" onclick="send('key:left')">LEFT ⬅️</div>
-            <div class="key special-key" onclick="send('key:down')">DOWN ⬇️</div>
-            <div class="key special-key" onclick="send('key:right')">RIGHT ➡️</div>
-            
-            <div class="key" onclick="send('key:w')">W (Газ)</div>
+            <div class="key" style="grid-column: 2" onclick="send('key:up')">▲</div>
+            <div class="key" onclick="send('key:left')">◀</div>
+            <div class="key" onclick="send('key:down')">▼</div>
+            <div class="key" onclick="send('key:right')">▶</div>
+
+            <div class="key" onclick="send('key:w')">W</div>
+            <div class="key" onclick="send('key:f6')">F6</div>
             <div class="key" onclick="send('key:enter')">ENTER</div>
-            <div class="key" onclick="send('key:space')">SPACE</div>
             
             <div class="key" onclick="send('key:alt+tab')">ALT+TAB</div>
+            <div class="key" onclick="send('key:space')">SPACE</div>
             <div class="key" onclick="send('key:alt+f4')">ALT+F4</div>
-            <div class="key" onclick="send('key:tab')">TAB</div>
         </div>
     </div>
 
     <div id="sys" class="content">
-        <button class="btn" style="width:100%; border-left-color: #ff9900;" onclick="send('reboot')">🔄 Перезагрузить ПК</button>
-        <button class="btn" style="width:100%; margin-top:10px; border-left-color: #ff0000;" onclick="send('off')">🛑 Выключить ПК</button>
+        <button class="btn" style="border-left-color: #ff9500;" onclick="send('reboot')">🔄 Перезагрузка</button>
+        <button class="btn" style="border-left-color: #ff3b30; color: #ff3b30;" onclick="send('off')">🛑 Выключить ПК</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // ВСТАВЬ СВОИ ДАННЫЕ ТУТ:
         const BOT_TOKEN = "8605766923:AAH5gWXQCJQ53s5bcLvTS9b5yLECnHfzyUA";
         const CHAT_ID = "7113810331";
 
@@ -90,15 +99,15 @@
             event.currentTarget.classList.add('active');
         }
 
-        // Функция отправки команды БЕЗ закрытия окна
         async function send(cmd) {
+            // Виброотклик (если телефон поддерживает)
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(cmd)}&disable_notification=true`;
             try {
                 await fetch(url);
             } catch (e) {
-                console.error("Ошибка отправки:", e);
-                // Если fetch не сработал, пробуем через Telegram (но окно закроется)
-                tg.sendData(cmd);
+                tg.sendData(cmd); // Запасной вариант
             }
         }
 
